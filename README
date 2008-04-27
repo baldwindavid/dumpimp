@@ -18,7 +18,7 @@ NOTE: Both the dump and import can take a :mysql5 namespace rather than :mysql i
   Examples:
     rake db:mysql:dump
       - dumps development database to a sql file in db/ folder
-      - then gzips the file so you're left with "env_database_name.sql.gz"
+      - then gzips the file so you're left with "env_database_name_dump.sql.gz"
   
     rake db:mysql:dump INITIAL_PATH=.
       - same as above except dumps into root of your application instead of db/
