@@ -3,41 +3,51 @@ dnb_mysql
 
 Rake tasks to export from a MySQL db and gzip and then unzip and import into different Env database
 
-NOTE: Both the dump and import can take a :mysql5 namespace rather than :mysql if necessary - My local environment only responds to mysql5 commands so I created this option
+NOTE: Both the dump and import can take a :mysql5 namespace rather than :mysql if necessary - My local environment only responds to mysql5 commands and I didn't know how to make it accept both
 
 
-db:mysql:dump
-=====================
-Options:
-  INITIAL_PATH=/my/db/dump/path/  (defaults to ~/dbdumps/)
-
+  db:mysql:dump || db:mysql5:dump
+  =====================
+  Description: Dump MySQL file and gzip for RAILS_ENV.  Initial path of dump is to "db/".  Set alternate path with INITIAL_PATH=path/to/dump/.  To skip gzip use GZIP=no.
+  
+  Options:
+    INITIAL_PATH=/my/db/dump/path/  (defaults to ~/dbdumps/)
+    GZIP=yes|no (defaults to yes)
+    RAILS_ENV=production|development|test (default is development)
 
   Examples:
-  rake db:mysql:dump
-    - dumps current environment's database to a sql file in ~/dbdumps folder
-    - then gzips the file so you're left with "env_database_name.sql.gz"
-    
-  rake db:mysql:dump INITIAL_PATH=.
-    - same as above except dumps into root of your application instead of ~/dbdumps/
+    rake db:mysql:dump
+      - dumps development database to a sql file in db/ folder
+      - then gzips the file so you're left with "env_database_name.sql.gz"
+  
+    rake db:mysql:dump INITIAL_PATH=.
+      - same as above except dumps into root of your application instead of db/
+  
+    rake db:mysql:dump GZIP=no RAILS_ENV=production
+      - dumps production database to sql file in db/ folder
+      - does not gzip the file
 
   
 
-db:mysql:import
-=====================
-Requirements:
-  FROM=environment - the environment of the file that the database dump file is being loaded from
-  RAILS_ENV=environment - the environment that the dump file is loaded to
-Options:
-  INITIAL_PATH=/my/db/dump/path/  (defaults to ~/dbdumps/)
+  db:mysql:import || db:mysql5:import
+  =====================
+  Description: Import MySQL dump .sql or .sql.gz file into the specified RAILS_ENV.  Select file with FILE=path/to/file/dump.sql.gz.  If the file is gzipped, it will be unzipped, imported and then gzipped back again.
+
+  Requirements:
+    FILE=path/to/file
+  
+  Options:
+    RAILS_ENV=production|development|test - the environment database that the dump file is loaded into (defaults to development)
 
   Examples:
-    rake db:mysql:import FROM=development RAILS_ENV=production
-      - first gunzips "FROM_environment_database_name.sql.gz" in ~/dbdumps/ folder
-      - then imports sql file into "RAILS_ENV_database_name"
+    rake db:mysql:import FILE=db/development_db_name_dump.sql.gz RAILS_ENV=production
+      - first gunzips "development_db_name_dump.sql.gz"
+      - then imports sql file into "production_db_name" database
       - finally gzips the file back up for the next usage
-    
-    rake db:mysql:import FROM=development RAILS_ENV=production INITIAL_PATH=.
-      - same as above except file is located in root of your app in this example rather than the default of ~/dbdumps/
+      
+    rake db:mysql:import FILE=db/development_db_name_dump.sql RAILS_ENV=test
+      - imports sql file into "test_db_name" database
+      - no gunzip or gzip takes place unless given a .gz file
       
 
 Copyright (c) 2008 David Baldwin, released under the MIT license
