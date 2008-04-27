@@ -11,7 +11,7 @@ NOTE: Both the dump and import can take a :mysql5 namespace rather than :mysql i
   Description: Dump MySQL file and gzip for RAILS_ENV.  Initial path of dump is to "db/".  Set alternate path with INITIAL_PATH=path/to/dump/.  To skip gzip use GZIP=no.
   
   Options:
-    INITIAL_PATH=/my/db/dump/path/  (defaults to ~/dbdumps/)
+    INITIAL_PATH=/my/db/dump/path/  (defaults to db/)
     GZIP=yes|no (defaults to yes)
     RAILS_ENV=production|development|test (default is development)
 
