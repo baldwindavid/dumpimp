@@ -34,7 +34,7 @@ def dump_from_mysql(initial_path, gzip, mysql_version = 'mysql')
   initial_path = (initial_path[-1,1] == "/") ? initial_path : initial_path + '/'
   
   connection = ActiveRecord::Base.establish_connection  
-  puts "Creating .sql dump file. Enter mysql root password. Just press Enter for none"
+  puts "Creating .sql dump file. Enter MySQL password for this database. Press enter for none"
   # dump file
   `#{mysql_version == 'mysql5' ? 'mysqldump5' : 'mysql'} -u #{connection.config[:username]} -p #{connection.config[:database]} > #{initial_path}#{connection.config[:database]}_dump.sql`
   
@@ -66,7 +66,7 @@ def import_from_mysql(file, mysql_version = 'mysql')
   
   connection = ActiveRecord::Base.establish_connection
   # import to current environment's database
-  puts "Enter mysql root password. Just press Enter for none"
+  puts "Enter MySQL password for this database. Press enter for none"
   `#{mysql_version} -u #{connection.config[:username]} -p #{connection.config[:database]} < #{sql_file}`
   puts "Imported #{sql_file} to #{connection.config[:database]} database."
   
