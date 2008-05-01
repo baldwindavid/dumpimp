@@ -36,7 +36,8 @@ def dump_from_mysql(initial_path, gzip, mysql_version = 'mysql')
   connection = ActiveRecord::Base.establish_connection  
   puts "Creating .sql dump file. Enter MySQL password for this database. Press enter for none"
   # dump file
-  `#{mysql_version == 'mysql5' ? 'mysqldump5' : 'mysql'} -u #{connection.config[:username]} -p #{connection.config[:database]} > #{initial_path}#{connection.config[:database]}_dump.sql`
+  `#{mysql_version == 'mysql5' ? 'mysqldump5' : 'mysqldump'} -u #{connection.config[:username]} -p 
+#{connection.config[:database]} > #{initial_path}#{connection.config[:database]}_dump.sql`
   
   if gzip == 'no'
     puts "Database dumped to #{initial_path}#{connection.config[:database]}_dump.sql"
