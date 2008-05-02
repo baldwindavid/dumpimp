@@ -28,24 +28,24 @@ end
 
 
 def dump_from_mysql(initial_path, gzip, mysql_version = 'mysql')
+  connection = ActiveRecord::Base.establish_connection  
+
   username = connection.config[:username]
   database = connection.config[:database]
   
-  initial_path ||= 'db/'
-  # make sure we have a slash at the end of the path to designate a directory
-  initial_path = (initial_path[-1,1] == "/") ? initial_path : initial_path + '/'
+  initial_path ||= File.join(RAILS_ROOT, 'db')
   
-  connection = ActiveRecord::Base.establish_connection  
   puts "Creating .sql dump file. Enter MySQL password for this database. Press enter for none"
   # dump file
-  `#{mysql_version == 'mysql5' ? 'mysqldump5' : 'mysqldump'} -u #{username} -p 
-#{database} > #{initial_path}#{database}_dump.sql`
+  dump_command = mysql_version == 'mysql5' ? 'mysqldump5' : 'mysqldump'
+  dump_file = File.join(initial_path, "#{database}_dump.sql")
+  `#{dump_command} -u #{username} -p#{database} > #{dump_file}`
   
   if gzip == 'no'
-    puts "Database dumped to #{initial_path}#{database}_dump.sql"
+    puts "Database dumped to #{dump_file}"
   else
-    `gzip #{initial_path}#{database}_dump.sql`
-    puts "Database dumped and gzipped to #{initial_path}#{database}_dump.sql.gz"
+    `gzip #{dump_file}`
+    puts "Database dumped and gzipped to #{dump_file}.gz"
   end
   
 end
