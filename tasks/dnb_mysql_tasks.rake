@@ -29,25 +29,31 @@ end
 
 def dump_from_mysql(initial_path, gzip, mysql_version = 'mysql')
   connection = ActiveRecord::Base.establish_connection  
-
+  config = YAML.load_file(File.join(RAILS_ROOT, 'config', 'database.yml'))[RAILS_ENV || 'development']
   username = connection.config[:username]
   database = connection.config[:database]
+
+  password_option = 
+    if config.include?('password')
+      "--password=#{config['password']}"
+    end
   
   initial_path ||= File.join(RAILS_ROOT, 'db')
   
-  puts "Creating .sql dump file. Enter MySQL password for this database. Press enter for none"
+  puts "Creating dump file..."
   # dump file
   dump_command = mysql_version == 'mysql5' ? 'mysqldump5' : 'mysqldump'
   dump_file = File.join(initial_path, "#{database}_dump.sql")
-  `#{dump_command} -u #{username} -p#{database} > #{dump_file}`
   
-  if gzip == 'no'
-    puts "Database dumped to #{dump_file}"
-  else
-    `gzip #{dump_file}`
-    puts "Database dumped and gzipped to #{dump_file}.gz"
-  end
+  gzip_command = 
+    if gzip != 'no'
+      dump_file += '.gzip'
+      '| gzip'
+    end
   
+  run("#{dump_command} -u #{username} #{password_option} #{database} #{gzip_command} > #{dump_file}")  
+
+  puts "Database dumped to #{dump_file}"
 end
 
 
@@ -79,4 +85,9 @@ def import_from_mysql(file, mysql_version = 'mysql')
     puts "Gzipped back again to #{file}"
   end
   
+end
+
+def run(command)
+  puts command
+  `#{command}`
 end
