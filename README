@@ -50,4 +50,4 @@ NOTE: Both the dump and import can take a :mysql5 namespace rather than :mysql i
       - no gunzip or gzip takes place unless given a .gz file
       
 
-Copyright (c) 2008 David Baldwin, released under the MIT license
+Copyright (c) 2008 Elijah Miller / David Baldwin, released under the MIT license
