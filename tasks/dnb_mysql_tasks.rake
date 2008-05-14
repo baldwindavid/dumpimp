@@ -34,13 +34,19 @@ def db_dump(initial_path, gzip)
   send(db_config['adapter'] + '_dump', initial_path, gzip)
 end
 
+def dump_suffix
+  t = Time.now.getgm
+  t = t.to_i.to_s + t.strftime("-%b-%d-%Y")
+  '_' + t
+end
+
 def mysql_dump(initial_path, gzip)
   username = db_config['username']
   database = db_config['database']
   
   initial_path ||= File.join(RAILS_ROOT, 'db')
     
-  dump_file = File.join(initial_path, "#{database}_dump.sql")
+  dump_file = File.join(initial_path, "#{database}#{dump_suffix}.sql")
   
   gzip_command = 
     if gzip != 'no'
