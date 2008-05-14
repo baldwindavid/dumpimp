@@ -1,8 +1,7 @@
 dnb_mysql
 ========
 
-Rake tasks to export from a database (currently only MySQL), gzip and then gunzip and import into different Env database
-
+Rake tasks to dump and import various database batch files. (currently only MySQL, but feel free to add additional)
 
   db:dump
   =====================
