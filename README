@@ -26,7 +26,7 @@ Rake tasks to dump and import various database batch files. (currently only MySQ
 
   
 
-  db:import
+  db:import (or db:imp)
   =====================
   Description: Import database dump file into the specified RAILS_ENV.  Select file with FILE=path/to/file.  If the file is gzipped, it will be unzipped, imported and then gzipped back again.
 

@@ -16,6 +16,12 @@ namespace :db do
   task :import => :check do
     db_import ENV['FILE']
   end
+  
+  desc 'Import SQL dump .sql or .sql.gz file into the specified RAILS_ENV.  Select file with FILE=path/to/file/dump.sql.gz.'
+  task :imp => :check do
+    db_import ENV['FILE']
+  end
+  
 end
 
 def db_config
