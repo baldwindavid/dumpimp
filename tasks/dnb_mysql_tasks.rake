@@ -31,7 +31,7 @@ def mysql_import_command
 end
 
 def db_dump(initial_path, gzip)
-  send(db_config['adapter']) + '_dump', initial_path, gzip)
+  send(db_config['adapter'] + '_dump', initial_path, gzip)
 end
 
 def mysql_dump(initial_path, gzip)
@@ -54,7 +54,7 @@ def mysql_dump(initial_path, gzip)
 end
 
 def db_import(file)
-  send(db_config['adapter']) + '_import', file)
+  send(db_config['adapter'] + '_import', file)
 end
 
 def mysql_import(file)
@@ -72,7 +72,7 @@ end
 
 def password_option
   if db_config.include?('password')
-    "--password=#{config['password']}"
+    "--password=#{db_config['password']}"
   end
 end
 
