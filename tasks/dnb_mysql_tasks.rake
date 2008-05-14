@@ -36,8 +36,7 @@ end
 
 def dump_suffix
   t = Time.now.getgm
-  t = t.to_i.to_s + t.strftime("-%b-%d-%Y")
-  '_' + t
+  '_' + t.strftime("%m-%d-%Y-") + t.to_i.to_s
 end
 
 def mysql_dump(initial_path, gzip)
