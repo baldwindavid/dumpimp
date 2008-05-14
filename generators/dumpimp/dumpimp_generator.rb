@@ -1,4 +1,4 @@
-class DnbMysqlGenerator < Rails::Generator::NamedBase
+class DumpimpGenerator < Rails::Generator::NamedBase
   def manifest
     record do |m|
       # m.directory "lib"

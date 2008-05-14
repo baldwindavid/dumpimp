@@ -1,4 +1,4 @@
-dnb_mysql
+dumpimp
 ========
 
 Rake tasks to dump and import various database batch files. (currently only MySQL, but feel free to add additional)
