@@ -62,6 +62,8 @@ def mysql_dump(initial_path, gzip)
   run("#{mysql_dump_command} -u #{username} #{password_option} #{database} #{gzip_command} > #{dump_file}")  
 
   puts "Database #{db_config['database']} dumped to #{dump_file}"
+  
+  return dump_file
 end
 
 def db_import(file)
