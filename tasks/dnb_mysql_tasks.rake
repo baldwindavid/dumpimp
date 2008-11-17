@@ -9,7 +9,7 @@ namespace :db do
 
   desc 'Dump SQL file and gzip for RAILS_ENV.  Initial path of dump is to "db/".  Set alternate path with INITIAL_PATH=path/to/dump/.  To skip gzip use GZIP=no.'
   task :dump => :check do
-    db_dump ENV['INITIAL_PATH'], ENV['GZIP']
+    db_dump ENV['INITIAL_PATH'], ENV.to_hash
   end
   
   desc 'Import SQL dump .sql or .sql.gz file into the specified RAILS_ENV.  Select file with FILE=path/to/file/dump.sql.gz.'
@@ -36,8 +36,8 @@ def mysql_import_command
   `which mysql5 || which mysql`.chomp
 end
 
-def db_dump(initial_path, gzip)
-  send(db_config['adapter'] + '_dump', initial_path, gzip)
+def db_dump(initial_path, options = {})
+  send(db_config['adapter'] + '_dump', initial_path, options)
 end
 
 def dump_suffix
@@ -45,7 +45,13 @@ def dump_suffix
   '_' + t.strftime("%m-%d-%Y-") + t.to_i.to_s
 end
 
-def mysql_dump(initial_path, gzip)
+def mysql_dump(initial_path, options = {})
+  
+  options = {
+    'GZIP' => 'yes',
+    'TABLES' => ''
+  }.merge(options)
+  
   username = db_config['username']
   database = db_config['database']
   
@@ -54,12 +60,12 @@ def mysql_dump(initial_path, gzip)
   dump_file = File.join(initial_path, "#{database}#{dump_suffix}.sql")
   
   gzip_command = 
-    if gzip != 'no'
+    if ENV['GZIP'] != 'no'
       dump_file += '.gz'
       '| gzip'
     end
   
-  run("#{mysql_dump_command} -u #{username} #{password_option} #{database} #{gzip_command} > #{dump_file}")  
+  run("#{mysql_dump_command} -u #{username} #{password_option} #{database} #{ENV['TABLES']} #{gzip_command} > #{dump_file}")  
 
   puts "Database #{db_config['database']} dumped to #{dump_file}"
   
