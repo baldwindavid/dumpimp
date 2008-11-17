@@ -7,7 +7,7 @@ namespace :db do
     end
   end
 
-  desc 'Dump SQL file and gzip for RAILS_ENV.  Initial path of dump is to "db/".  Set alternate path with INITIAL_PATH=path/to/dump/.  To skip gzip use GZIP=no.'
+  desc 'Dump SQL file and gzip for RAILS_ENV.  Initial path of dump is to "db/".  Set alternate path with INITIAL_PATH=path/to/dump/.  To skip gzip use GZIP=no.  Specify tables with TABLES="table1 table2 table3"'
   task :dump => :check do
     db_dump ENV['INITIAL_PATH'], ENV.to_hash
   end
