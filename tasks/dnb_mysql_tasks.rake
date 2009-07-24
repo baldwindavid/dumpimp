@@ -7,7 +7,7 @@ namespace :db do
     end
   end
 
-  desc 'Dump SQL file and gzip for RAILS_ENV.  Initial path of dump is to "db/".  Set alternate path with INITIAL_PATH=path/to/dump/.  To skip gzip use GZIP=no.  Specify tables with TABLES="table1 table2 table3"'
+  desc 'Dump SQL file and gzip for RAILS_ENV. Uses db config in database.yml. Initial path of dump is to "db/".  Set alternate path with INITIAL_PATH=path/to/dump/.  To skip gzip use GZIP=no.  Specify tables with TABLES="table1 table2 table3"'
   task :dump => :check do
     db_dump ENV['INITIAL_PATH'], ENV.to_hash
   end
@@ -49,7 +49,7 @@ def mysql_dump(initial_path, options = {})
   
   options = {
     'GZIP' => 'yes',
-    'TABLES' => ''
+    'TABLES' => '',
   }.merge(options)
   
   username = db_config['username']
@@ -65,9 +65,13 @@ def mysql_dump(initial_path, options = {})
       '| gzip'
     end
   
-  run("#{mysql_dump_command} -u #{username} #{password_option} #{database} #{ENV['TABLES']} #{gzip_command} > #{dump_file}")  
+  success = run("#{mysql_dump_command} #{config_option('host')} #{config_option('port')} -u #{username} #{config_option('password')} #{database} #{ENV['TABLES']} #{gzip_command} > #{dump_file}")
 
-  puts "Database #{db_config['database']} dumped to #{dump_file}"
+  if success
+    puts "Database #{db_config['database']} dumped to #{dump_file}"
+  else
+    puts "ERROR: Database #{db_config['database']} FAILED to dump to #{dump_file}"
+  end
   
   return dump_file
 end
@@ -84,14 +88,18 @@ def mysql_import(file)
       'cat'
     end
     
-  run("#{cat_dump_command} #{file} | #{mysql_import_command} -u #{db_config['username']} #{password_option} #{db_config['database']}")
+  success = run("#{cat_dump_command} #{file} | #{mysql_import_command} #{config_option('host')} #{config_option('port')} -u #{db_config['username']} #{config_option('password')} #{db_config['database']}")
   
-  puts "Imported #{file} to #{db_config['database']} database."
+  if success
+    puts "Imported #{file} to #{db_config['database']} database."
+  else
+    puts "ERROR: Import of #{file} to #{db_config['database']} database FAILED."
+  end
 end
 
-def password_option
-  if db_config.include?('password')
-    "--password=#{db_config['password']}"
+def config_option(type)
+  if db_config.include?(type)
+    "--#{type}=#{db_config[type]}"
   end
 end
 
